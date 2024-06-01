@@ -916,10 +916,19 @@ module.exports = ({ types: t, traverse }) => {
               ]);
               return;
             } else {
-              path.replaceWithMultiple([
+              const nodes = [
                 ...replacements,
                 ...extractVars(consequent)
-              ]);
+              ]
+              // path.replaceWithMultiple([]) will throw an error;
+              // eg:
+              // if (false) { foo; }
+              if(nodes.length >0){
+                path.replaceWithMultiple(nodes);
+              }
+              // else{
+              //   path.remove();   // `if (false) { foo; }` will throw an error
+              // }
             }
           }
 
